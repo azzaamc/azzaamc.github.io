@@ -158,9 +158,13 @@ section h2 {
 
 /* Project1 */
 #project1 p {
+    text-align: left;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.short-description p {
     text-align: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 /* Footer */
