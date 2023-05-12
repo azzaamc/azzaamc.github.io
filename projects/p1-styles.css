@@ -157,8 +157,8 @@ section h2 {
 }
 
 /* Project1 */
-#project1 p {
-
+#project1 h1 {
+    text-align: center;
 }
 
 .long-description p {
