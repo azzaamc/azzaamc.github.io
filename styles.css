@@ -133,6 +133,11 @@ section h2 {
     margin-bottom: 1rem;
 }
 
+#contact a {
+    text-decoration: none;
+    color: #333;
+}
+
 /* Footer */
 footer {
     background-color: #f4f4f4;
