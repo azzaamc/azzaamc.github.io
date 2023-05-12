@@ -13,7 +13,6 @@ body {
 
 a {
     text-decoration: none;
-    color: #f4f4f4;
 }
 
 ul {
@@ -52,6 +51,7 @@ nav ul li:last-child {
 nav ul li a:hover {
     color: #555;
     transition: color 0.3s;
+    color: #f4f4f4;
 }
 
 /* Sections */
@@ -118,8 +118,8 @@ section h2 {
 #skills ul {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    grid-gap: 1rem;
-    padding: 1rem;
+    grid-gap: 0.5rem;
+    padding: 2rem;
 }
 
 /* Contact */
