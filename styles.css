@@ -138,6 +138,10 @@ section h2 {
     color: #191e73;
 }
 
+#contact p {
+    text-align: center;
+}
+
 /* Footer */
 footer {
     background-color: #f4f4f4;
