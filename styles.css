@@ -49,7 +49,6 @@ nav ul li:last-child {
 }
 
 nav ul li a:hover {
-    color: #555;
     transition: color 0.3s;
     color: #f4f4f4;
 }
