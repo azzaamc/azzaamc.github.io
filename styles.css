@@ -88,6 +88,13 @@ section h2 {
     margin-bottom: 0.5rem;
 }
 
+.home-text-wrapper {
+    background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+    display: inline-block;
+    padding: 1rem; /* Adjust the padding as needed */
+    border-radius: 10px; /* Rounded corners */
+}
+
 /* About */
 #about .profile-photo {
     max-width: 300px;
