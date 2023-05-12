@@ -91,9 +91,9 @@ section h2 {
 }
 
 #about {
-  text-align: center;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  text-align: left;
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 /* Projects */
