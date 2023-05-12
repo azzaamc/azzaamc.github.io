@@ -157,11 +157,17 @@ section h2 {
 }
 
 /* Project1 */
+#project1 {
+    padding-top: 6rem;
+
+}
+
 #project1 h1 {
     text-align: center;
 }
 
 #project1 object {
+    display: block;
     margin: auto;
 }
 
