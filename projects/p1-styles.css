@@ -161,6 +161,10 @@ section h2 {
     text-align: center;
 }
 
+#project1 object {
+    margin: auto;
+}
+
 .long-description p {
     text-align: left;
     padding-left: 3rem;
