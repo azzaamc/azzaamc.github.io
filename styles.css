@@ -77,6 +77,10 @@ section h2 {
     align-items: center;
     text-align: center;
     padding-top: 6rem;
+    background-image: url('home_bground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 #home h1 {
