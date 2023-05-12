@@ -158,6 +158,10 @@ section h2 {
 
 /* Project1 */
 #project1 p {
+
+}
+
+.long-description p {
     text-align: left;
     padding-left: 3rem;
     padding-right: 3rem;
