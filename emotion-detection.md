@@ -1,0 +1,41 @@
+layout: page
+title: "Emotion Detection"
+permalink: /projects/emotion-detection
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1 - Electrical & Computer Engineering Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="project1">
+        <h1>Project 1</h1>
+        <p>Short description of project 1. This project focuses on...</p>
+        <img src="project1-image.jpg" alt="Project 1">
+        <h2>About Project 1</h2>
+        <p>Longer description of Project 1 with more details, goals, and technologies used.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 [Your Name]. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
