@@ -128,6 +128,11 @@ section h2 {
     margin-bottom: 0.5rem;
 }
 
+.project p {
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
 /* Skills */
 #skills ul {
     display: grid;
@@ -145,6 +150,8 @@ section h2 {
 
 #contact li {
     margin-bottom: 1rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
 }
 
 #contact a {
@@ -154,6 +161,8 @@ section h2 {
 
 #contact p {
     text-align: center;
+    padding-left: 3rem;
+    padding-right: 3rem;
 }
 
 /* Footer */
