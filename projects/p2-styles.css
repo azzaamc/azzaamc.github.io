@@ -145,5 +145,5 @@ button {
     border-radius: 8px;
     text-align: center;
     margin:0 auto;
-    /*display:block;*/
+    display:inline;
 }
