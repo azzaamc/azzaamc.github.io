@@ -140,7 +140,7 @@ footer {
     cursor: pointer;
 }
 
-.button {
+button {
     background-color: #521818;
     border-radius: 8px;
     text-align: center;
