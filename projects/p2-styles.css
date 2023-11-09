@@ -140,11 +140,14 @@ footer {
     cursor: pointer;
 }
 
-button {
-    background-color: aliceblue;
-    border-radius: 8px;
+.buttons {
     text-align: center;
     margin: auto;
     display: flex;
     display: grid;
+}
+
+button {
+    background-color: aliceblue;
+    border-radius: 8px;
 }
