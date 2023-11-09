@@ -6,9 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project 1 - Electrical & Computer Engineering Portfolio</title>
     <link rel="stylesheet" href="p1-styles.css">
-</head>
+<style>
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+</style>
+
 
 <body>
+    <!-- Modal Buttons -->
+<button id="btnDataMemoryv" class="modal-button" data-modal="modalDataMemoryv">View DataMemory.v</button>
+<button id="btnInstructionMemoryv" class="modal-button" data-modal="modalInstructionMemoryv">View InstructionMemory.v</button>
+<button id="btnSingleCycleControlv" class="modal-button" data-modal="modalSingleCycleControlv">View SingleCycleControl.v</button>
+<button id="btnSingleCycleProcv" class="modal-button" data-modal="modalSingleCycleProcv">View SingleCycleProc.v</button>
+<button id="btnSingleCycleProcTestv" class="modal-button" data-modal="modalSingleCycleProcTestv">View SingleCycleProcTest.v</button>
+
     <header>
         <nav>
             <ul>
@@ -43,6 +91,84 @@
     <footer>
         <p>&copy; 2023 Abdullah Faisal Chaudhry. All rights reserved.</p>
     </footer>
-</body>
+
+    <div id="modalDataMemoryv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeDataMemoryv">
+                <!-- The content of DataMemory.v will be loaded here -->
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalInstructionMemoryv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeInstructionMemoryv">
+                <!-- The content of InstructionMemory.v will be loaded here -->
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalSingleCycleControlv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeSingleCycleControlv">
+                <!-- The content of SingleCycleControl.v will be loaded here -->
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalSingleCycleProcv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeSingleCycleProcv">
+                <!-- The content of SingleCycleProc.v will be loaded here -->
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalSingleCycleProcTestv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeSingleCycleProcTestv">
+                <!-- The content of SingleCycleProcTest.v will be loaded here -->
+            </code></pre>
+        </div>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script>
+
+// Get all the modal buttons
+var modalButtons = document.querySelectorAll('.modal-button');
+
+// Add event listeners to buttons
+modalButtons.forEach(function(btn) {
+    btn.onclick = function() {
+        var modal = document.getElementById(btn.getAttribute('data-modal'));
+        modal.style.display = "block";
+    }
+});
+
+// Get all of the elements with class="close" (the x button)
+var closeButtons = document.querySelectorAll('.close');
+
+// Add event listeners to close buttons
+closeButtons.forEach(function(btn) {
+    btn.onclick = function() {
+        var modal = btn.closest('.modal');
+        modal.style.display = "none";
+    }
+});
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target.className === 'modal') {
+        event.target.style.display = "none";
+    }
+}
+
+</script>
+
 
 </html>
