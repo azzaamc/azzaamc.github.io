@@ -55,85 +55,86 @@
                 `timescale 1ns / 1ps
 
                 `define SIZE 1024
-                
+
                 module DataMemory(ReadData , Address , WriteData , MemoryRead , MemoryWrite , Clock);
-                   input [63:0]      WriteData;
-                   input [63:0]      Address;
-                   input             Clock, MemoryRead, MemoryWrite;
-                   output reg [63:0] ReadData;
-                
-                   reg [7:0] 	     memBank [`SIZE-1:0];
-                
-                
-                   // This task is used to write arbitrary data to the Data Memory by
-                   // the intialization block.
-                   task initset;
-                      input [63:0] addr;
-                      input [63:0] data;
-                      begin
-                     memBank[addr] =  data[63:56] ; // Big-endian for the win...
-                     memBank[addr+1] =  data[55:48];
-                     memBank[addr+2] =  data[47:40];
-                     memBank[addr+3] =  data[39:32];
-                     memBank[addr+4] =  data[31:24];
-                     memBank[addr+5] =  data[23:16];
-                     memBank[addr+6] =  data[15:8];
-                     memBank[addr+7] =  data[7:0];
-                      end
-                   endtask
-                
-                
-                   initial
-                     begin
+                input [63:0]      WriteData;
+                input [63:0]      Address;
+                input             Clock, MemoryRead, MemoryWrite;
+                output reg [63:0] ReadData;
+
+                reg [7:0] 	     memBank [`SIZE-1:0];
+
+
+                // This task is used to write arbitrary data to the Data Memory by
+                // the intialization block.
+                task initset;
+                    input [63:0] addr;
+                    input [63:0] data;
+                    begin
+                    memBank[addr] =  data[63:56] ; // Big-endian for the win...
+                    memBank[addr+1] =  data[55:48];
+                    memBank[addr+2] =  data[47:40];
+                    memBank[addr+3] =  data[39:32];
+                    memBank[addr+4] =  data[31:24];
+                    memBank[addr+5] =  data[23:16];
+                    memBank[addr+6] =  data[15:8];
+                    memBank[addr+7] =  data[7:0];
+                    end
+                endtask
+
+
+                initial
+                    begin
                         // preseting some data in the data memory used by test #1
-                
+
                         // Address 0x0 gets 0x1
                         initset( 64'h0,  64'h1);  //Counter variable
                         initset( 64'h8,  64'ha);  //Part of mask
                         initset( 64'h10, 64'h5);  //Other part of mask
                         initset( 64'h18, 64'h0ffbea7deadbeeff); //big constant
                         initset( 64'h20, 64'h0); //clearing space
-                
+
                         // Add any data you need for your tests here.
-                
-                     end
-                
-                   // This always block reads the data memory and places a double word
-                   // on the ReadData bus.
-                   always @(posedge Clock)
-                     begin
+
+                    end
+
+                // This always block reads the data memory and places a double word
+                // on the ReadData bus.
+                always @(posedge Clock)
+                    begin
                         if(MemoryRead)
-                          begin
-                             ReadData[63:56] <=  memBank[Address];
-                             ReadData[55:48] <=  memBank[Address+1];
-                             ReadData[47:40] <=  memBank[Address+2];
-                             ReadData[39:32] <=  memBank[Address+3];
-                             ReadData[31:24] <=  memBank[Address+4];
-                             ReadData[23:16] <=  memBank[Address+5];
-                             ReadData[15:8] <=  memBank[Address+6];
-                             ReadData[7:0] <=  memBank[Address+7];
-                          end
-                     end
-                
-                   // This always block takes data from the WriteData bus and writes
-                   // it into the DataMemory.
-                   always @(posedge Clock)
-                     begin
+                        begin
+                            ReadData[63:56] <=  memBank[Address];
+                            ReadData[55:48] <=  memBank[Address+1];
+                            ReadData[47:40] <=  memBank[Address+2];
+                            ReadData[39:32] <=  memBank[Address+3];
+                            ReadData[31:24] <=  memBank[Address+4];
+                            ReadData[23:16] <=  memBank[Address+5];
+                            ReadData[15:8] <=  memBank[Address+6];
+                            ReadData[7:0] <=  memBank[Address+7];
+                        end
+                    end
+
+                // This always block takes data from the WriteData bus and writes
+                // it into the DataMemory.
+                always @(posedge Clock)
+                    begin
                         if(MemoryWrite)
-                          begin
-                             memBank[Address] <= #3 WriteData[63:56] ;
-                             memBank[Address+1] <= #3 WriteData[55:48];
-                             memBank[Address+2] <= #3 WriteData[47:40];
-                             memBank[Address+3] <= #3 WriteData[39:32];
-                             memBank[Address+4] <= #3 WriteData[31:24];
-                             memBank[Address+5] <= #3 WriteData[23:16];
-                             memBank[Address+6] <= #3 WriteData[15:8];
-                             memBank[Address+7] <= #3 WriteData[7:0];
-                             // Could be useful for debugging:
-                             // $display("Writing Address:%h Data:%h",Address, WriteData);
-                          end
-                     end
+                        begin
+                            memBank[Address] <= #3 WriteData[63:56] ;
+                            memBank[Address+1] <= #3 WriteData[55:48];
+                            memBank[Address+2] <= #3 WriteData[47:40];
+                            memBank[Address+3] <= #3 WriteData[39:32];
+                            memBank[Address+4] <= #3 WriteData[31:24];
+                            memBank[Address+5] <= #3 WriteData[23:16];
+                            memBank[Address+6] <= #3 WriteData[15:8];
+                            memBank[Address+7] <= #3 WriteData[7:0];
+                            // Could be useful for debugging:
+                            // $display("Writing Address:%h Data:%h",Address, WriteData);
+                        end
+                    end
                 endmodule
+
                             </code></pre>
         </div>
     </div>
@@ -142,7 +143,106 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <pre><code class="language-verilog" id="codeInstructionMemoryv">
-                <!-- The content of InstructionMemory.v will be loaded here -->
+                `timescale 1ns / 1ps
+                /*
+                * Module: InstructionMemory
+                *
+                * Implements read-only instruction memory
+                * 
+                */
+                module InstructionMemory(Data, Address);
+                parameter T_rd = 20;
+                parameter MemSize = 40;
+                
+                output [31:0] Data;
+                input [63:0]  Address;
+                reg [31:0] 	 Data;
+                
+                /*
+                    * ECEN 350 Processor Test Functions
+                    * Texas A&M University
+                    */
+                
+                always @ (Address) begin
+
+                    case(Address)
+
+                    /* Test Program 1:
+                    * Program loads constants from the data memory. Uses these constants to test
+                    * the following instructions: LDUR, ORR, AND, CBZ, ADD, SUB, STUR and B.
+                    * 
+                    * Assembly code for test:
+                    * 
+                    * 0: LDUR X9, [XZR, 0x0]    //Load 1 into x9
+                    * 4: LDUR X10, [XZR, 0x8]   //Load a into x10
+                    * 8: LDUR X11, [XZR, 0x10]  //Load 5 into x11
+                    * C: LDUR X12, [XZR, 0x18]  //Load big constant into x12
+                    * 10: LDUR X13, [XZR, 0x20]  //load a 0 into X13
+                    * 
+                    * 14: ORR X10, X10, X11  //Create mask of 0xf
+                    * 18: AND X12, X12, X10  //Mask off low order bits of big constant
+                    * 
+                    * loop:
+                    * 1C: CBZ X12, end  //while X12 is not 0
+                    * 20: ADD X13, X13, X9  //Increment counter in X13
+                    * 24: SUB X12, X12, X9  //Decrement remainder of big constant in X12
+                    * 28: B loop  //Repeat till X12 is 0
+                    * 2C: STUR X13, [XZR, 0x20]  //store back the counter value into the memory location 0x20
+                    */
+                    
+
+                    63'h000: Data = 32'hF84003E9;
+                    63'h004: Data = 32'hF84083EA;
+                    63'h008: Data = 32'hF84103EB;
+                    63'h00c: Data = 32'hF84183EC;
+                    63'h010: Data = 32'hF84203ED;
+                    63'h014: Data = 32'hAA0B014A;
+                    63'h018: Data = 32'h8A0A018C;
+                    63'h01c: Data = 32'hB400008C;
+                    63'h020: Data = 32'h8B0901AD;
+                    63'h024: Data = 32'hCB09018C;
+                    63'h028: Data = 32'h17FFFFFD;
+                    63'h02c: Data = 32'hF80203ED;
+                    63'h030: Data = 32'hF84203ED;  //One last load to place stored value on memdbus for test checking.
+
+                    /* Add code for your tests here */
+                    //TEST PROGRAM 2
+                    /*
+                    ADDI X9, XZR, 0x0
+                    
+                    MOVZ X11, 0X1234, LSL 48
+                    ADD X9, X11, X9 
+                    MOVZ X11, 0X5678, LSL 32
+                    ADD X9, X11, X9 
+                    MOVZ X11, 0X9abc, LSL 16
+                    ADD X9, X11, X9 
+                    MOVZ X11, 0Xdef0, LSL 0
+                    ADD X9, X11, X9 
+                    
+                    STUR X9 [0x0, 0x28]
+                    LDUR X10 [0x0, 0x28]	
+                    
+                    */
+                    
+                    63'h034: Data = 32'b10010001000000000000001111101001;
+                    63'h038: Data = 32'b11010010111000100100011010001011;
+                    63'h03c: Data = 32'b10001011000010010000000101101001;
+                    63'h040: Data = 32'b11010010110010101100111100001011;
+                    63'h044: Data = 32'b10001011000010010000000101101001;
+                    63'h048: Data = 32'b11010010101100110101011110001011;
+                    63'h04c: Data = 32'b10001011000010010000000101101001;
+                    63'h050: Data = 32'b11010010100110111101111000001011;
+                    63'h054: Data = 32'b10001011000010010000000101101001;
+                    63'h058: Data = 32'b11111000000000011100001111101001;
+                    63'h05c: Data = 32'b11111000010000011100001111101010;
+
+                    
+
+                    
+                    default: Data = 32'hXXXXXXXX;
+                    endcase
+                end
+                endmodule
             </code></pre>
         </div>
     </div>
@@ -151,7 +251,205 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <pre><code class="language-verilog" id="codeSingleCycleControlv">
-                <!-- The content of SingleCycleControl.v will be loaded here -->
+                `define OPCODE_ANDREG 11'b?0001010???
+                `define OPCODE_ORRREG 11'b?0101010???
+                `define OPCODE_ADDREG 11'b?0?01011???
+                `define OPCODE_SUBREG 11'b?1?01011???
+
+                `define OPCODE_ADDIMM 11'b?0?10001???
+                `define OPCODE_SUBIMM 11'b?1?10001???
+
+                `define OPCODE_MOVZ   11'b110100101??
+
+                `define OPCODE_B      11'b?00101?????
+                `define OPCODE_CBZ    11'b?011010????
+
+                `define OPCODE_LDUR   11'b??111000010
+                `define OPCODE_STUR   11'b??111000000
+
+                module control(
+                        output reg 	reg2loc,
+                        output reg 	alusrc,
+                        output reg 	mem2reg,
+                        output reg 	regwrite,
+                        output reg 	memread,
+                        output reg 	memwrite,
+                        output reg 	branch,
+                        output reg 	uncond_branch,
+                        output reg [3:0] aluop,
+                        output reg [2:0] signop,
+                        input [10:0] 	opcode
+                        );
+
+                always @(*)
+                    begin
+                    casez (opcode)
+
+                        /* Add cases here for each instruction your processor supports */
+
+                        default:
+                            begin
+                        //DEFAULT CASE
+                            reg2loc       = 1'bx;
+                            alusrc        = 1'bx;
+                            mem2reg       = 1'bx;
+                            regwrite      = 1'b0;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'bxxxx;
+                            signop        = 3'bxxx;
+                            end
+                        //R TYPE ORR INSTRUCTION
+                        `OPCODE_ANDREG: begin
+                        reg2loc       = 1'b0;
+                            alusrc        = 1'b0;
+                            mem2reg       = 1'b0;
+                            regwrite      = 1'b1;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0000;
+                            signop        = 3'bxxx;
+                        end
+                        //R TYPE ORR INSTRUCTION
+                        `OPCODE_ORRREG: begin
+                        reg2loc       = 1'b0;
+                            alusrc        = 1'b0;
+                            mem2reg       = 1'b0;
+                            regwrite      = 1'b1;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0001;
+                            signop        = 3'bxxx;
+                        end
+                        //R TYPE ADD INSTRUCTION
+                        `OPCODE_ADDREG: begin
+                        reg2loc       = 1'b0;
+                            alusrc        = 1'b0;
+                            mem2reg       = 1'b0;
+                            regwrite      = 1'b1;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0010;
+                            signop        = 3'bxxx;
+                        end
+                        //R TYPE SUBTRACT INSTRUCTION
+                        `OPCODE_SUBREG: begin
+                        reg2loc       = 1'b0;
+                            alusrc        = 1'b0;
+                            mem2reg       = 1'b0;
+                            regwrite      = 1'b1;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0110;
+                            signop        = 3'bxxx;
+                        end
+                        //I TYPE ADD INSTRUCTION
+                        `OPCODE_ADDIMM: begin
+                        reg2loc       = 1'bx;
+                            alusrc        = 1'b1;
+                            mem2reg       = 1'b0;
+                            regwrite      = 1'b1;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0010;
+                            signop        = 3'b000;
+                        end
+                        //I TYPE SUBTRACT INSTRUCTION
+                        `OPCODE_SUBIMM: begin
+                        reg2loc       = 1'bx;
+                            alusrc        = 1'b1;
+                            mem2reg       = 1'b0;
+                            regwrite      = 1'b1;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0110;
+                            signop        = 3'b000;
+
+                        end
+                        //B TYPE BRANCH INSTRUCTION
+                        `OPCODE_B: begin
+                        reg2loc       = 1'bx;
+                            alusrc        = 1'bx;
+                            mem2reg       = 1'bx;
+                            regwrite      = 1'b0;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'bx;
+                            uncond_branch = 1'b1;
+                            aluop         = 4'bxxxx;
+                            signop        = 3'b010;
+                        end
+                        //CB TYPE CBZ INSTRUCTION
+                        `OPCODE_CBZ: begin
+                        reg2loc       = 1'b1;
+                            alusrc        = 1'b0;
+                            mem2reg       = 1'bx;
+                            regwrite      = 1'b0;
+                            memread       = 1'b0;
+                            memwrite      = 1'b0;
+                            branch        = 1'b1;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0111;
+                            signop        = 3'b011;
+                        end
+                        //D TYPE LOAD INSTRUCTION
+                        `OPCODE_LDUR: begin
+                        reg2loc       = 1'bx;
+                            alusrc        = 1'b1;
+                            mem2reg       = 1'b1;
+                            regwrite      = 1'b1;
+                            memread       = 1'b1;
+                            memwrite      = 1'b0;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0010;
+                            signop        = 3'b001;
+                        end
+                        //D TYPE STORE INSTRUCTION
+                        `OPCODE_STUR: begin
+                        reg2loc       = 1'b1;
+                            alusrc        = 1'b1;
+                            mem2reg       = 1'bx;
+                            regwrite      = 1'b0;
+                            memread       = 1'b0;
+                            memwrite      = 1'b1;
+                            branch        = 1'b0;
+                            uncond_branch = 1'b0;
+                            aluop         = 4'b0010;
+                            signop        = 3'b001;
+                        end
+                        //MOVZ INSTRUCTION
+                    `OPCODE_MOVZ: begin
+                        reg2loc       = 1'b0; //we dont care about reading register 2
+                            alusrc        = 1'b1; //we want to input into the ALU the sign extened immediate (passB)
+                            mem2reg       = 1'b0; //we are not writing from memory
+                            regwrite      = 1'b1; //we are writing the sign extended immediate into the destination register
+                            memread       = 1'b0; //we are not reading from memory
+                            memwrite      = 1'b0; //we are not writing anything to memory
+                            branch        = 1'b0; //we are not branching
+                            uncond_branch = 1'b0; //we are not branching
+                            aluop         = 4'b0111; //PassB (we want to pass sign extended value directy to data memory
+                            signop        = 3'b100; //sign extension ctrl for IM type (MOVZ)
+                        end
+                        
+                    endcase
+                    end
+
+                endmodule
             </code></pre>
         </div>
     </div>
@@ -160,7 +458,144 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <pre><code class="language-verilog" id="codeSingleCycleProcv">
-                <!-- The content of SingleCycleProc.v will be loaded here -->
+                module singlecycle(
+                        input 	     resetl,
+                        input [63:0]      startpc,
+                        output reg [63:0] currentpc,
+                        output [63:0]     MemtoRegOut,  // this should be
+                                        // attached to the
+                                        // output of the
+                                        // MemtoReg Mux
+                        input 	     CLK
+                        );
+
+                // Next PC connections
+                wire [63:0] 			     nextpc;       // The next PC, to be updated on clock cycle
+
+                // Instruction Memory connections
+                wire [31:0] 			     instruction;  // The current instruction
+                // data memory connection
+                wire [63:0] memout;
+                // Parts of instruction
+                wire [4:0] 			     RW;            // The destination register
+                wire [4:0] 			     RA;            // Operand 1
+                wire [4:0] 			     RB;            // Operand 2
+                wire [10:0] 			     opcode;
+
+                // Control wires
+                wire 			     reg2loc;
+                wire 			     alusrc;
+                wire 			     mem2reg;
+                wire 			     regwrite;
+                wire 			     memread;
+                wire 			     memwrite;
+                wire 			     branch;
+                wire 			     uncond_branch;
+                wire [3:0] 			     aluctrl;
+                wire [2:0] 			     signop;
+
+                // Register file connections
+                wire [63:0] 			     regoutA;     // Output A
+                wire [63:0] 			     regoutB;     // Output B
+
+                // ALU connections
+                wire [63:0] 	   aluout;
+                wire 			     zero;
+
+                // Sign Extender connections
+                wire [63:0] 			     extimm;
+
+                // PC update logic
+                always @(negedge CLK)
+                    begin
+                        if (resetl)
+                        currentpc <= #3 nextpc;
+                        else
+                        currentpc <= #3 startpc;
+                    end
+
+                // Parts of instruction
+                assign RW = instruction[4:0];
+                assign RA = instruction[9:5];
+                assign RB = reg2loc ? instruction[4:0] : instruction[20:16];
+                assign opcode = instruction[31:21];
+                assign MemtoRegOut = mem2reg ? memout : aluout;
+                wire [63:0] alumux;
+                assign alumux = (alusrc) ? extimm : regoutB;
+                
+
+                InstructionMemory imem(
+                            .Data(instruction),
+                            .Address(currentpc)
+                            );
+
+                
+                control control(
+                        .reg2loc(reg2loc),
+                        .alusrc(alusrc),
+                        .mem2reg(mem2reg),
+                        .regwrite(regwrite),
+                        .memread(memread),
+                        .memwrite(memwrite),
+                        .branch(branch),
+                        .uncond_branch(uncond_branch),
+                        .aluop(aluctrl),
+                        .signop(signop),
+                        .opcode(opcode)
+                        );
+                        
+                //adding the sign extender. We input the extended immediate, the first 26 bits of the instruction and the signop for the different types of instructions
+                SignExtender SignExtender(
+                    .BusImm(extimm), 
+                    .Instr(instruction[25:0]),  
+                        .Ctrl(signop)
+                    );
+                //adding the ALU. 
+                    ALU ALU(
+                    .BusW(aluout), //the result of the ALU
+                    .Zero(zero), //signal bit if the result is zero
+                    .BusA(regoutA), //bus A is what comes out of RegOutA
+                    .BusB(alumux),  //bus B takes on what coes out of the ALU mux (either sign extended value or what is in RegB)
+                    .ALUCtrl(aluctrl) //defines what ALU does
+                    );
+
+                //implementing the next pc logic
+                    NextPClogic NextPClogic(
+                    .NextPC(nextpc), //wire that specfies the next PC address
+                    .Branch(branch), //ctrl signal
+                    .ALUZero(zero), //bit signal that says if the result of the ALU is zero
+                    .CurrentPC(currentpc), //current PC value
+                    .SignExtImm64(extimm), //what comes out of the sign extender
+                    .Uncondbranch(uncond_branch) //ctrl signal
+                    );
+                //implementing the register file
+                    RegisterFile RegisterFile(
+                    .BusA(regoutA), 
+                        .BusB(regoutB), //the data that comes out of regB
+                        .BusW(MemtoRegOut), //whats coming from memory and being written into the register
+                        .RA(RA), 
+                        .RB(RB), 
+                        .RW(RW), 
+                        .RegWr(regwrite), //signal
+                        .Clk(CLK)
+                    );
+                //IMPLEMENTIN THE DATA MEMORY
+                    DataMemory dmem(
+                        .ReadData(memout), //data that comes out of memory address
+                        .Address(aluout), //What comes out of the ALU
+                        .WriteData(regoutB), //RegB
+                        .MemoryRead(memread), //ctrl signals
+                        .MemoryWrite(memwrite),
+                        .Clock(CLK)
+                    );
+
+
+                    
+
+                    
+
+
+                endmodule
             </code></pre>
         </div>
     </div>
@@ -169,7 +604,133 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <pre><code class="language-verilog" id="codeSingleCycleProcTestv">
-                <!-- The content of SingleCycleProcTest.v will be loaded here -->
+                `timescale 1ns / 1ps
+
+                `define STRLEN 32
+                `define HalfClockPeriod 60
+                `define ClockPeriod `HalfClockPeriod * 2
+
+                module SingleCycleProcTest_v;
+
+                initial
+                    begin
+                        $dumpfile("singlecycle.vcd");
+                        $dumpvars;
+                    end
+
+                // These tasks are used to check if a given test has passed and
+                // confirm that all tests passed.
+                task passTest;
+                    input [63:0] actualOut, expectedOut;
+                    input [`STRLEN*8:0] testType;
+                    inout [7:0] 	  passed;
+
+                    if(actualOut == expectedOut) begin $display ("%s passed", testType); passed = passed + 1; end
+                    else $display ("%s failed: 0x%x should be 0x%x", testType, actualOut, expectedOut);
+                endtask
+
+                task allPassed;
+                    input [7:0] passed;
+                    input [7:0] numTests;
+
+                    if(passed == numTests) $display ("All tests passed");
+                    else $display("Some tests failed: %d of %d passed", passed, numTests);
+                endtask
+
+                // Inputs
+                reg 		  CLK;
+                reg 		  Reset_L;
+                reg [63:0] 	  startPC;
+                reg [7:0] 	  passed;
+                reg [15:0] 	  watchdog;
+
+                // Outputs
+                wire [63:0] 	  MemtoRegOut;
+                wire [63:0] 	  currentPC;
+
+                // Instantiate the Unit Under Test (UUT)
+                singlecycle uut (
+                            .CLK(CLK),
+                            .resetl(Reset_L),
+                            .startpc(startPC),
+                            .currentpc(currentPC),
+                            .MemtoRegOut(MemtoRegOut)
+                            );
+
+                initial begin
+                    // Initialize Inputs
+                    Reset_L = 1;
+                    startPC = 0;
+                    passed = 0;
+
+                    // Initialize Watchdog timer
+                    watchdog = 0;
+
+                    // Wait for global reset
+                    #(1 * `ClockPeriod);
+
+                    // Program 1
+                    #1
+                        Reset_L = 0; startPC = 0;
+                    @(posedge CLK);
+                    @(negedge CLK);
+                    @(posedge CLK);
+                    Reset_L = 1;
+
+                    // ***********************************************************
+                    // This while loop will continue cycling the processor until the
+                    // PC reaches the final instruction in the first test.  If the
+                    // program forms an infinite loop, never reaching the end, the
+                    // watchdog timer will kick in and kill simulation after 64K
+                    // cycles.
+                    // ***********************************************************
+
+                    while (currentPC < 64'h30)
+                        begin
+                    @(posedge CLK);
+                    @(negedge CLK);
+                        $display("CurrentPC:%h",currentPC);
+                        end
+                    passTest(MemtoRegOut, 64'hF, "Results of Program 1", passed);
+
+                    // ***********************************************************
+                    // Add your new tests here
+                    // ***********************************************************
+                    while (currentPC < 64'h5c)
+                        begin
+                    @(posedge CLK);
+                    @(negedge CLK);
+                        $display("CurrentPC:%h",currentPC);
+                        end
+                    passTest(MemtoRegOut, 64'h123456789abcdef0, "Results of Program 2", passed);
+                    // Done
+                    allPassed(passed, 2);   // Be sure to change the one to match
+                    // the number of tests you add.
+                    $finish;
+                end
+
+                // Initialize the clock to be 0
+                initial begin
+                    CLK = 0;
+                end
+
+                // The following is correct if clock starts at LOW level at StartTime //
+                always begin
+                    #`HalfClockPeriod CLK = ~CLK;
+                    #`HalfClockPeriod CLK = ~CLK;
+                    watchdog = watchdog +1;
+                end
+
+                // Kill the simulation if the watchdog hits 64K cycles
+                always @*
+                    if (watchdog == 16'hFF)
+                    begin
+                        $display("Watchdog Timer Expired.");
+                        $finish;
+                    end
+
+
+                endmodule
             </code></pre>
         </div>
     </div>
