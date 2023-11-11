@@ -33,6 +33,15 @@
         <button id="btnSingleCycleControlv" class="modal-button" data-modal="modalSingleCycleControlv">View SingleCycleControl.v</button>
         <button id="btnSingleCycleProcv" class="modal-button" data-modal="modalSingleCycleProcv">View SingleCycleProc.v</button>
         <button id="btnSingleCycleProcTestv" class="modal-button" data-modal="modalSingleCycleProcTestv">View SingleCycleProcTest.v</button>
+        <br>
+        <button id="btnALUv" class="modal-button" data-modal="modalALUv">View ALU.v</button>
+        <button id="btnNextPClogicv" class="modal-button" data-modal="modalNextPClogicv">View NextPClogic.v</button>
+        <button id="btnRegisterFilev" class="modal-button" data-modal="modalRegisterFilev">View RegisterFile.v</button>
+        <button id="btnSignExtenderv" class="modal-button" data-modal="modalSignExtenderv">View SignExtender.v</button>
+        <button id="btnDecoder24v" class="modal-button" data-modal="modalDecoder24v">View Decoder24.v</button>
+        <br>
+        <button id="btnHalfAddv" class="modal-button" data-modal="modalHalfAddv">View HalfAdd.v</button>
+        <button id="btnMuxv" class="modal-button" data-modal="modalMuxv">View Mux.v</button>
         </div>
         <!--<img src="project1-image.jpg" alt="Project 1">-->
         <br>
@@ -734,6 +743,237 @@
             </code></pre>
         </div>
     </div>
+
+    <div id="modalALUv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeALUv">
+                module ALU(BusW, BusA, BusB, ALUCtrl, Zero);
+
+                input   [63:0] BusA, BusB;
+                input   [3:0] ALUCtrl;
+                output reg Zero; //1 when BusW is zero
+                output reg     [63:0] BusW;
+
+                always @(ALUCtrl or BusA or BusB) begin //monitoring our inputs
+
+                    case(ALUCtrl)
+
+                        4'b0000:
+                            BusW = BusA & BusB; 
+
+                        4'b0001:
+                            BusW = BusA | BusB;
+
+                        4'b0010:
+                            BusW = BusA + BusB;
+
+                        4'b0110:
+                            BusW = BusA - BusB;
+
+                        4'b0111:
+                            BusW = BusB;
+
+                    endcase
+
+                end // always @ (ALUCtrl or BusA or BusB)
+
+                always @(*) begin
+                    if (BusW == 0) begin Zero = 1; end
+                    else if (BusW != 0) begin Zero = 0; end
+                end
+
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalNextPClogicv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeNextPClogicv">
+                module NextPClogic(NextPC, CurrentPC, SignExtImm64, Branch, ALUZero, Uncondbranch); 
+
+                    input [63:0] CurrentPC, SignExtImm64; // SignExtImm64 is the output of the sign extender
+
+                    // Branch is true if the current instruction is a conditional branch instruction
+                    // Uncondbranch is true if the current instruction is an Unconditional Branch (B)
+                    // ALUZero is the Zero output of the ALU
+                    input Branch, ALUZero, Uncondbranch;
+                    output [63:0] NextPC; 
+
+                    //wire [63:0] shiftSignExt = SignExtImm64 << 2; // shift left 2 (may not need to)
+
+                    wire AND0 = Branch && ALUZero; // gate logic
+                    wire muxControl = AND0 || Uncondbranch; // gate logic for PC mux control
+
+                    reg [63:0] muxOutput; // result of MUX
+
+                    always @ (*)
+                    begin
+                            // MUX logic
+                            if(muxControl)
+                                    muxOutput <=  CurrentPC + SignExtImm64;
+                            else
+                                    muxOutput <=  CurrentPC + 4;
+                    end
+
+                    assign NextPC = muxOutput; // Assign next PC to the outut of the MUX
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalRegisterFilev" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeRegisterFilev">
+                module RegisterFile(BusA, BusB, BusW, RA, RB, RW, RegWr, Clk);
+                    // Buses A, B, and W are 64 bits wide
+                    output [63:0] BusA; // // The contents of register RA
+                    output [63:0] BusB; // The contents of register RB
+                    input [63:0] BusW; // What is written to register RW
+                    input [4:0] RA, RB, RW; // Specify which registers to use
+                    input RegWr;
+                    input Clk;
+                    reg [63:0] registers [31:0]; // 32, 64-bit registers
+                    
+                    initial registers[31] = 64'b0; // initialize register 31 to 0 because register 31 is XZR
+                    
+                    assign #2 BusA = registers[RA]; // BusA reads register RA
+                    assign #2 BusB = registers[RB]; // BusB reads register RB
+
+                    always @ (negedge Clk) begin // check every negative clock edge
+                        if(RegWr == 1 && RW != 31) // ensure that register 31 is not overwritten and regwrite is ennabled
+                            registers[RW] <= #3 BusW; // data on Bus W is stored in the register specified by Rw
+                    end
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalSignExtenderv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeSignExtenderv">
+                module SignExtender(BusImm, Instr, Ctrl);
+
+                    output [63:0] BusImm;
+                    input [25:0] Instr;
+                    input [2:0] Ctrl; //3 bit input for the type of instruction. for MOVZ we need a new case / type of instuction for IM instruction
+                        
+                    reg [63:0] result; //have to have a reg because we are in behavioral style
+
+                    always @ (*)
+                        begin        
+                            case(Ctrl)
+                                3'b000: // I-type, 12-bit immediate found in bits [21:10] from the original instructrion
+                                begin
+                                    result = {52'b0, Instr[21:10]};
+                                end
+                                3'b001: // D-type, 9-bit address offset found in bits [20:12] from the original instructrion
+                                begin
+                                    result = {{55{Instr[20]}}, Instr[20:12]};
+                                end
+                                3'b010: // B-type, 26-bit branch address found in bits [25:0] from the original instructrion
+                                begin
+                                    result = {{36{Instr[25]}}, Instr[25:0], 2'b0};
+                                end
+                                3'b011: // CB-type, 19-bit branch address found in bits [23:5] from the original instructrion
+                                begin
+                                    result = {{43{Instr[23]}}, Instr[23:5], 2'b0};
+                                end
+                                3'b100: //IM-Type 
+                                begin
+                                    result = {(64'b0 | Instr[20:5]) << (Instr[22:21]*16)}; 
+                                end
+                            endcase
+                        end
+                        
+                    // assign output, BusImm
+                        assign BusImm = result;
+
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalDecoder24v" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeDecoder24v">
+                module Decode24(out, in);
+                    input [1:0] in;
+                    output [3:0] out;
+
+                    //have to declare output as reg because we are using behavioral model
+                    reg [3:0] 	out;
+
+                    always //behavioral model
+                        begin @* //the comparisons will be made the instant any input changes
+                        if(in ==2'b00)
+                        out = 4'b0001;
+                        
+                        if(in ==2'b01)
+                        out = 4'b0010;
+
+                        if(in ==2'b10)
+                        out = 4'b0100;
+
+                        if(in ==2'b11)
+                        out = 4'b1000;
+                        end // always
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalHalfAddv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeHalfAddv">
+                module HalfAdd (Cout, Sum, A, B);
+                    input A,B;
+                    output Cout, Sum;
+                    wire  N0, N1, N2, N3 ;
+
+                    //AND gate made of NAND gates for A AND B which = Cout
+                    // Cout = (A NAND B) NAND (A NAND B)
+                    nand n0(N0, A, B);
+                    nand nC(Cout, N0, N0);
+
+                    //XOR gate made of NAND gates fo A XOR B which = Sum
+                    //Sum = (A NAND (A NAND B)) NAND (B NAND (A NAND B))
+                    nand n1(N1, A, B);
+                    nand n2(N2, A, N1);
+                    nand n3(N3, N1, B);
+                    nand nS(Sum, N2, N3);
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
+    <div id="modalMuxv" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre><code class="language-verilog" id="codeMuxv">
+                module Mux21 (out, in, sel);
+                    input [1:0] in; 
+                    input       sel;
+                    output      out;
+
+                    wire        N0, N1, N2;
+
+                    not not0(N0, sel); //have to invert sel
+                    and and0(N1, in[0], N0); //in[0] is the input that goes into the and gate with inverted sel
+                    and and1(N2, in[1], sel); //second input in[1] that goes into and gate with sel
+                    or or1(out, N2, N1); //or the outputs of the and gates
+
+                endmodule
+            </code></pre>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2023 Abdullah Faisal Chaudhry. All rights reserved.</p>
     </footer>
