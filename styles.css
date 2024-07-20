@@ -96,19 +96,24 @@ section h2 {
 }
 
 /* About */
+#about {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
 #about .profile-photo {
     max-width: 300px;
-    height: 500px;
-    margin: 2rem auto;
-    display: block;
+    margin-right: 2rem;
     border-radius: 5%;
 }
 
-#about {
-  text-align: left;
-  padding-left: 3rem;
-  padding-right: 3rem;
+#about p {
+    max-width: 600px;
+    text-align: left;
 }
+
 
 /* Projects */
 .project {
