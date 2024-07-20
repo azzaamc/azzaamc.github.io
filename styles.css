@@ -136,11 +136,8 @@ section h2 {
 }
 
 /* Skills */
-#skills ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    grid-gap: 0.5rem;
-    padding: 2rem;
+#skills {
+    padding: 2rem 3rem;
 }
 .skills-container {
     display: flex;
